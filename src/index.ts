@@ -63,7 +63,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 // Add team member
-const whitelist = ["http://localhost:3000", "http://localhost:3001"];
+const whitelist = ["https://gimsindia.in", "http://www.gimsindia.in"];
 const corsOptions = {
   origin: function (origin: any, callback: any) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
