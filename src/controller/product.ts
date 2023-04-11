@@ -100,7 +100,7 @@ export async function getfaq(req: Request, res: Response) {
 export async function addfaq(req: Request, res: Response) {
   try {
     const { question, answer, productId } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     try {
       await client.query(
         "INSERT INTO faq(id,question,answer,productId) VALUES ($1 ,$2 , $3 , $4 );",
