@@ -12,7 +12,15 @@ declare module "express-serve-static-core" {
 
 export async function addproduct(req: Request, res: Response) {
   try {
-    const { name, type, description, technicalspecs }: any = req.body;
+    const {
+      name,
+      type,
+      description,
+      technicalspecs,
+      presentInHomePage,
+      serialno,
+      youtubeId
+    }: any = req.body;
     const imgpath = "./public/products";
     const brochurepath = "./public/products";
     const imgfile = req.files[0];
@@ -34,8 +42,19 @@ export async function addproduct(req: Request, res: Response) {
 
     try {
       await client.query(
-        "INSERT INTO product(name,type,description,image,brochure,technicalspecs) VALUES ($1 ,$2 , $3 , $4 , $5 , $6);",
-        [name, type, description, imgloc, brochureimgloc, technicalspecs]
+        "INSERT INTO product(id,name,type,description,image,brochure,technicalspecs,presentInHomePage,serialno,youtubeId) VALUES ($1 ,$2 , $3 , $4 , $5 , $6,$7,$8,$9,$10);",
+        [
+          uuidv4(),
+          name,
+          type,
+          description,
+          imgloc,
+          brochureimgloc,
+          technicalspecs,
+          presentInHomePage,
+          serialno,
+          youtubeId
+        ]
       );
     } catch (err) {
       return res.json({ message: err.message }).end();
@@ -47,7 +66,7 @@ export async function addproduct(req: Request, res: Response) {
 }
 
 export async function getproducts(_: Request, res: Response) {
-  const team = await client.query("SELECT * FROM product;");
+  const team = await client.query("SELECT * FROM product ORDER BY serialno ASC;");
   return res.status(200).json(team.rows);
 }
 

@@ -36,7 +36,7 @@ client.query(
 // );
 
 client.query(
-  "CREATE TABLE IF NOT EXISTS product(id  SERIAL PRIMARY KEY,	Name TEXT NOT NULL,	type TEXT NOT NULL,	description TEXT NOT NULL,	image TEXT ,	brochure TEXT,design TEXT,motor TEXT,waterspeeds TEXT,dimensions TEXT,maximumload TEXT,construction TEXT,technicalspecs TEXT)",
+  "CREATE TABLE IF NOT EXISTS product(id  UUID PRIMARY KEY,	Name TEXT NOT NULL,	type TEXT NOT NULL,	description TEXT NOT NULL,	image TEXT ,	brochure TEXT,technicalspecs TEXT,presentInHomePage boolean , serialno INT,youtubeId TEXT)",
   (err) => {
     if (err) {
       console.log(err.stack);
@@ -54,7 +54,7 @@ client.query(
 );
 
 client.query(
-  "CREATE TABLE IF NOT EXISTS image(id UUID NOT NULL PRIMARY KEY,location TEXT NOT NULL,productId SERIAL REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+  "CREATE TABLE IF NOT EXISTS image(id UUID NOT NULL PRIMARY KEY,location TEXT NOT NULL,productId UUID REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE)",
   (err) => {
     if (err) {
       console.log(err.stack);
@@ -80,7 +80,7 @@ client.query(
 );
 
 client.query(
-  "CREATE TABLE IF NOT EXISTS faq(id UUID NOT NULL PRIMARY KEY,question TEXT,answer TEXT ,productid SERIAL REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE)",
+  "CREATE TABLE IF NOT EXISTS faq(id UUID NOT NULL PRIMARY KEY,question TEXT,answer TEXT ,productid UUID REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE)",
   (err) => {
     if (err) {
       console.log(err.stack);
