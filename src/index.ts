@@ -76,9 +76,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get("/services", getService);
+app.get("/service", getService);
 app.get("/teammembers", getMembers);
-app.get("/products", getproducts);
+app.get("/product", getproducts);
 app.get("/product/:id", getproduct);
 app.get("/faq/:id", getfaq);
 app.get("/image/:id", getImages);
@@ -107,7 +107,7 @@ app.post(
   addService
 );
 app.get(
-  "/requirements",
+  "/requirement",
   (req: Request, res: Response, next: NextFunction) => {
     authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
   },
@@ -135,7 +135,7 @@ app.put(
   updatecareer
 );
 app.get(
-  "/applications",
+  "/application",
   (req: Request, res: Response, next: NextFunction) => {
     authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
   },
