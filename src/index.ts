@@ -1,7 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import * as dotenv from "dotenv";
 import client from "./db/postgres";
-import { addmember, deleteMember, getMembers } from "./controller/team";
+import {
+  addmember,
+  deleteMember,
+  getMember,
+  getMembers,
+  updatemember,
+} from "./controller/team";
 import {
   addImage,
   addfaq,
@@ -63,7 +69,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 // Add team member
-const whitelist = ["https://gimsindia.in", "http://www.gimsindia.in"];
+const whitelist = [
+  "https://gimsindia.in",
+  "http://www.gimsindia.in",
+  "http://localhost:3000",
+];
 const corsOptions = {
   origin: function (origin: any, callback: any) {
     if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -78,6 +88,7 @@ app.use(cors(corsOptions));
 
 app.get("/service", getService);
 app.get("/teammembers", getMembers);
+app.get("/teammember/:id", getMember);
 app.get("/product", getproducts);
 app.get("/product/:id", getproduct);
 app.get("/faq/:id", getfaq);
@@ -256,6 +267,14 @@ app.post(
   upload.any("uploadedImages", 2),
   addmember
 );
+app.put(
+  "/member",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN"]);
+  },
+  updatemember
+);
+
 app.delete(
   "/deletemember/:id",
   (req: Request, res: Response, next: NextFunction) => {

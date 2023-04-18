@@ -85,6 +85,70 @@ export async function addmember(req: Request, res: Response) {
   }
   return res.status(200).json({ message: "Team Member added" });
 }
+export async function updatemember(req: Request, res: Response) {
+  const {
+    id,
+    name,
+    role,
+    serialno,
+    industryexperience,
+    researchexperience,
+    designskills,
+    projectmanagement,
+    creativity,
+    programmingskills,
+    industryknowledge,
+    manufacturing,
+    selfmotivation,
+    stamina,
+    reflex,
+    intelligence,
+    healingfactor,
+    sarcasm,
+    speed,
+    email,
+    linkedin,
+    number,
+  }: any = req.body;
+  try {
+    await client.query(
+      "UPDATE Team SET name = $1,serialno = $2,role=$3,industryexperience = $4,researchexperience = $5,designskills = $6,projectmanagement = $7,creativity = $8,programmingskills = $9,industryknowledge = $10,manufacturing = $11,selfmotivation = $12,stamina = $13,reflex = $14,intelligence = $15,healingfactor = $16,sarcasm = $17,speed = $18,email = $19,linkedin = $20,number = $21 WHERE id = $22;",
+      [
+        name,
+        serialno,
+        role,
+        industryexperience,
+        researchexperience,
+        designskills,
+        projectmanagement,
+        creativity,
+        programmingskills,
+        industryknowledge,
+        manufacturing,
+        selfmotivation,
+        stamina,
+        reflex,
+        intelligence,
+        healingfactor,
+        sarcasm,
+        speed,
+        email,
+        linkedin,
+        number,
+        id,
+      ]
+    );
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
+  return res.status(200).json({ message: "Team Member Updated" });
+}
+export async function getMember(req: Request, res: Response) {
+  const { id } = req.params;
+  const team = await client.query("SELECT * FROM Team WHERE id = $1", [id]);
+
+  return res.status(200).json(team.rows[0]);
+}
 
 export async function getMembers(_: Request, res: Response) {
   const team = await client.query("SELECT * FROM Team ORDER BY serialno ASC;");
