@@ -38,16 +38,20 @@ export async function addmember(req: Request, res: Response) {
   const herofile = req.files[1];
   const imgfiletype = imgfile.mimetype?.split("/")[1];
   const heroimgfiletype = herofile.mimetype?.split("/")[1];
-  const imgloc = `${name + "." + imgfiletype}`;
-  const heroimgloc = `${name + "hero." + heroimgfiletype}`;
+  let imgname = "";
+  await name.split(" ").map((nam : any) =>{
+    imgname += nam
+  })
+  const imgloc = `${imgname + "." + imgfiletype}`;
+  const heroimgloc = `${imgname + "hero." + heroimgfiletype}`;
   await fs.rename(
     `${imgpath}/${imgfile.filename}`,
-    `${imgpath}/${name + "." + imgfiletype}`,
+    `${imgpath}/${imgname + "." + imgfiletype}`,
     () => {}
   );
   await fs.rename(
     `${imgpath}/${herofile.filename}`,
-    `${imgpath}/${name + "hero." + heroimgfiletype}`,
+    `${imgpath}/${imgname + "hero." + heroimgfiletype}`,
     () => {}
   );
 
