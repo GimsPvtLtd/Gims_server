@@ -19,7 +19,7 @@ export async function addproduct(req: Request, res: Response) {
       technicalspecs,
       presentInHomePage,
       serialno,
-      youtubeId
+      youtubeId,
     }: any = req.body;
     const imgpath = "./public/products";
     const brochurepath = "./public/products";
@@ -53,7 +53,7 @@ export async function addproduct(req: Request, res: Response) {
           technicalspecs,
           presentInHomePage,
           serialno,
-          youtubeId
+          youtubeId,
         ]
       );
     } catch (err) {
@@ -66,7 +66,9 @@ export async function addproduct(req: Request, res: Response) {
 }
 
 export async function getproducts(_: Request, res: Response) {
-  const team = await client.query("SELECT * FROM product ORDER BY serialno ASC;");
+  const team = await client.query(
+    "SELECT * FROM product ORDER BY serialno ASC;"
+  );
   return res.status(200).json(team.rows);
 }
 
@@ -134,11 +136,11 @@ export async function addImage(req: Request, res: Response) {
       "SELECT name FROM product where id = $1",
       [productId]
     );
-    let imgfiletype;
     const date = Date.now().toString();
     try {
       imgfile.map(async (img: any, ind: any) => {
-        imgfiletype = img.mimetype?.split("/")[1];
+        let imgfiletype;
+        imgfiletype = await img.mimetype?.split("/")[1];
 
         await fs.rename(
           `${imgpath}/${img.filename}`,
@@ -161,7 +163,7 @@ export async function addImage(req: Request, res: Response) {
               product.rows[0].name +
               "_" +
               ind.toString() +
-              date.toString() +
+              date +
               "." +
               imgfiletype
             }`,
