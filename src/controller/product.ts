@@ -64,7 +64,36 @@ export async function addproduct(req: Request, res: Response) {
   }
   return res.status(200).json({ message: "Product added" });
 }
-
+export async function updateproduct(req: Request, res: Response) {
+  const {
+    id,
+    name,
+    type,
+    description,
+    technicalspecs,
+    presentInHomePage,
+    serialno,
+    youtubeId,
+  }: any = req.body;
+  try {
+    await client.query(
+      "UPDATE product SET name = $1,serialno = $2,type=$3,description = $4,technicalspecs= $5,presentInHomePage= $6,youtubeId = $7 WHERE id = $8;",
+      [
+        name,
+        serialno,
+        type,
+        description,
+        technicalspecs,
+        presentInHomePage,
+        youtubeId,
+        id,
+      ]
+    );
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
+  return res.status(200).json({ message: "Product Updated" });
+}
 export async function getproducts(_: Request, res: Response) {
   const team = await client.query(
     "SELECT * FROM product ORDER BY serialno ASC;"

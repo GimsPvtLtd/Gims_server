@@ -222,3 +222,15 @@ export async function ApproveLeave(req: Request, res: Response) {
   ]);
   return res.status(200).json({ message: "Leave status updated" });
 }
+
+export async function ChangePass(req: Request, res: Response) {
+  const { password } = req.body;
+  bcrypt.hash(password, 10).then(async (hash: any) => {
+    await client.query("UPDATE usertable SET password = $1 WHERE userid = $2", [
+      hash,
+      req.user.userid,
+    ]);
+  });
+
+  return res.status(200).json({ message: "Password Updated" });
+}

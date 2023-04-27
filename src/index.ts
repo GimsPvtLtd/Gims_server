@@ -18,6 +18,7 @@ import {
   getfaq,
   getproduct,
   getproducts,
+  updateproduct,
 } from "./controller/product";
 import {
   addRequirement,
@@ -37,6 +38,7 @@ import {
 } from "./controller/Career";
 import {
   ApproveLeave,
+  ChangePass,
   addUser,
   applyLeave,
   deleteUser,
@@ -222,6 +224,13 @@ app.delete(
   },
   deletefaq
 );
+app.put(
+  "/product",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+  },
+  updateproduct
+);
 app.delete(
   "/product/:id",
   (req: Request, res: Response, next: NextFunction) => {
@@ -288,6 +297,13 @@ app.post(
     authMiddleware(req, res, next, ["ADMIN"]);
   },
   addUser
+);
+app.post(
+  "/changepass",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN"]);
+  },
+  ChangePass
 );
 app.delete(
   "/user/:id",
