@@ -114,7 +114,7 @@ app.post("/login", login);
 app.post(
   "/addservice",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHNICIAN"]);
   },
   multer({ dest: "./public/services" }).any("serviceImg", 10),
   addService
@@ -122,56 +122,77 @@ app.post(
 app.get(
   "/requirement",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHNICIAN"]);
   },
   getRequirements
 );
 app.get(
   "/requirement/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHNICIAN"]);
   },
   getRequirement
 );
 app.post(
   "/addcareer",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "HR"]);
   },
   addCareer
 );
 app.put(
   "/career",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "HR"]);
   },
   updatecareer
 );
 app.get(
   "/application",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "HR"]);
   },
   getApplications
 );
 app.post(
   "/uploadtimesheet",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   uploadTimesheet
 );
 app.delete(
   "/timesheet/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   deletetimesheet
 );
 app.get(
   "/timesheet/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   getTimesheet
 );
@@ -185,63 +206,126 @@ app.get(
 app.post(
   "/applyleave",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   applyLeave
 );
 app.get(
   "/leave/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   getLeave
 );
 app.delete(
   "/leave/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   deleteleave
 );
 app.get(
   "/leaves",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   getLeaves
 );
 app.post(
   "/approveleave",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   ApproveLeave
 );
 app.delete(
   "/faq/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   deletefaq
 );
 app.put(
   "/product",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   updateproduct
 );
 app.delete(
   "/product/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   deleteproduct
 );
 app.post(
   "/addproduct",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   multer({ dest: "./public/products" }).any("uploadedproduct", 2),
   addproduct
@@ -249,14 +333,28 @@ app.post(
 app.post(
   "/upload/faq",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   addfaq
 );
 app.post(
   "/upload/image",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   multer({ dest: "./public/products" }).any("uploadedImg", 10),
   addImage
@@ -264,7 +362,7 @@ app.post(
 app.delete(
   "/service/:id",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN", "ENGINEER"]);
+    authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHICIAN"]);
   },
   deleteService
 );
@@ -301,7 +399,14 @@ app.post(
 app.post(
   "/changepass",
   (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, ["ADMIN"]);
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
   },
   ChangePass
 );
