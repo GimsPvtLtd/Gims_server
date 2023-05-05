@@ -24,19 +24,23 @@ export async function addproduct(req: Request, res: Response) {
     const imgpath = "./public/products";
     const brochurepath = "./public/products";
     const imgfile = req.files[0];
-    const brochurefile = req.files[1];
+    let brochureimgloc;
+    if (req.files.length > 1) {
+      const brochurefile = req.files[1];
+      const brochureimgfiletype = brochurefile.mimetype?.split("/")[1];
+      brochureimgloc = `${name + "brochure." + brochureimgfiletype}`;
+      await fs.rename(
+        `${brochurepath}/${brochurefile.filename}`,
+        `${brochurepath}/${name + "brochure." + brochureimgfiletype}`,
+        () => {}
+      );
+    }
+
     const imgfiletype = imgfile.mimetype?.split("/")[1];
-    const brochureimgfiletype = brochurefile.mimetype?.split("/")[1];
     const imgloc = `${name + "." + imgfiletype}`;
-    const brochureimgloc = `${name + "brochure." + brochureimgfiletype}`;
     await fs.rename(
       `${imgpath}/${imgfile.filename}`,
       `${imgpath}/${name + "." + imgfiletype}`,
-      () => {}
-    );
-    await fs.rename(
-      `${brochurepath}/${brochurefile.filename}`,
-      `${brochurepath}/${name + "brochure." + brochureimgfiletype}`,
       () => {}
     );
 

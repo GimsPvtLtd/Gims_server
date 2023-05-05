@@ -63,7 +63,7 @@ client.query(
 );
 
 client.query(
-  "CREATE TABLE IF NOT EXISTS requirements(id UUID NOT NULL PRIMARY KEY,name TEXT,designation TEXT,email TEXT,companyname TEXT,mobile TEXT,address TEXT,fieldofservice TEXT,requirements TEXT,filelocation TEXT,date DATE);",
+  "CREATE TABLE IF NOT EXISTS requirements(id UUID NOT NULL PRIMARY KEY,name TEXT,designation TEXT,email TEXT,companyname TEXT,mobile TEXT,address TEXT,fieldofservice TEXT,requirements TEXT,filelocation TEXT,date DATE,serviceid UUID NULL REFERENCES services(id) ON DELETE CASCADE ON UPDATE CASCADE,completedby TEXT NULL REFERENCES usertable(userId),completedOn timestamptz NULL,status TEXT);",
   (err) => {
     if (err) {
       console.log(err.stack);

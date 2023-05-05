@@ -21,12 +21,15 @@ import {
   updateproduct,
 } from "./controller/product";
 import {
+  AssignRequirement,
   addRequirement,
   addService,
   deleteService,
   getRequirement,
   getRequirements,
+  getRequirementsByUser,
   getService,
+  getservice,
 } from "./controller/Services";
 import {
   addCareer,
@@ -89,6 +92,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.get("/service", getService);
+app.get("/service/:id", getservice);
 app.get("/teammembers", getMembers);
 app.get("/teammember/:id", getMember);
 app.get("/product", getproducts);
@@ -125,6 +129,27 @@ app.get(
     authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHNICIAN"]);
   },
   getRequirements
+);
+app.get(
+  "/tasks/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
+  },
+  getRequirementsByUser
+);
+app.post(
+  "/assigntask",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN"]);
+  },
+  AssignRequirement
 );
 app.get(
   "/requirement/:id",

@@ -54,7 +54,7 @@ export async function addService(req: Request, res: Response) {
 export async function getService(_: Request, res: Response) {
   const services = await client.query("SELECT * FROM services;");
   res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader('Access-Control-Allow-Origin','*')
+  res.setHeader("Access-Control-Allow-Origin", "*");
   return res.status(200).json(services.rows);
 }
 
@@ -69,20 +69,23 @@ export async function addRequirement(req: Request, res: Response) {
       address,
       fieldofservice,
       requirements,
+      id,
     } = req.body;
-
-    const filepath = "./public/requirements";
-    const file = req.file;
-    const filetype = file.mimetype?.split("/")[1];
-    const fileloc = `${companyname + "requirement." + filetype}`;
-    await fs.rename(
-      `${filepath}/${file.filename}`,
-      `${filepath}/${companyname + "requirement." + filetype}`,
-      () => {}
-    );
+    let fileloc;
+    if (req.file) {
+      const filepath = "./public/requirements";
+      const file = req.file;
+      const filetype = file.mimetype?.split("/")[1];
+      fileloc = `${companyname + "requirement." + filetype}`;
+      await fs.rename(
+        `${filepath}/${file.filename}`,
+        `${filepath}/${companyname + "requirement." + filetype}`,
+        () => {}
+      );
+    }
     try {
       await client.query(
-        "INSERT INTO requirements(id,name,email,designation,companyname,mobile,address,fieldofservice,requirements,filelocation,date) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",
+        "INSERT INTO requirements(id,name,email,designation,companyname,mobile,address,fieldofservice,requirements,filelocation,date,serviceid,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
         [
           uuidv4(),
           name,
@@ -95,6 +98,8 @@ export async function addRequirement(req: Request, res: Response) {
           requirements,
           fileloc,
           new Date().toISOString(),
+          id,
+          "PENDING",
         ]
       );
     } catch (err) {
@@ -111,6 +116,14 @@ export async function getRequirements(_: Request, res: Response) {
   const requirements = await client.query("SELECT * FROM requirements;");
   return res.status(200).json(requirements.rows);
 }
+export async function getservice(req: Request, res: Response) {
+  const { id } = req.params;
+  const service = await client.query("SELECT * FROM services WHERE id = $1;", [
+    id,
+  ]);
+
+  return res.status(200).json(service.rows);
+}
 export async function deleteService(req: Request, res: Response) {
   const { id } = req.params;
   try {
@@ -121,11 +134,33 @@ export async function deleteService(req: Request, res: Response) {
     return res.json({ message: err.message }).end();
   }
 }
+export async function getRequirementsByUser(req: Request, res: Response) {
+  const { id } = req.params;
+  const requirement = await client.query(
+    "SELECT * FROM requirements WHERE completedby = $1;",
+    [id]
+  );
+
+  return res.status(200).json(requirement.rows);
+}
 export async function getRequirement(req: Request, res: Response) {
   const { id } = req.params;
-  const requirement = await client.query("SELECT * FROM requirements WHERE id = $1;", [
-    id,
-  ]);
+  const requirement = await client.query(
+    "SELECT * FROM requirements WHERE id = $1;",
+    [id]
+  );
 
   return res.status(200).json(requirement.rows[0]);
+}
+export async function AssignRequirement(req: Request, res: Response) {
+  const { userid, requirementId } = req.body;
+  try {
+    await client.query(
+      "UPDATE requirements SET completedby = $1 WHERE id = $2;",
+      [userid, requirementId]
+    );
+    return res.status(200).json({ message: "Task Assigned" });
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
 }
