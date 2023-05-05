@@ -106,7 +106,7 @@ client.query(
 );
 
 client.query(
-  "CREATE TABLE IF NOT EXISTS timesheet(id UUID NOT NULL PRIMARY KEY,activity TEXT NOT NULL,starttime timestamptz NOT NULL,endtime timestamptz NOT NULL,noOfhours INT NOT NULL,updatedOn timestamptz NOT NULL,userid TEXT REFERENCES usertable(userid) ON DELETE CASCADE ON UPDATE CASCADE,description TEXT)",
+  "CREATE TABLE IF NOT EXISTS timesheet(id UUID NOT NULL PRIMARY KEY,activity TEXT NOT NULL,starttime timestamptz NOT NULL,endtime timestamptz NOT NULL,noOfhours FLOAT NOT NULL,updatedOn timestamptz NOT NULL,userid TEXT REFERENCES usertable(userid) ON DELETE CASCADE ON UPDATE CASCADE,description TEXT)",
   (err) => {
     if (err) {
       console.log(err.stack);
