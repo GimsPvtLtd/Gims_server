@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { mail } from "./mail";
 
 export interface file {
   fieldname?: string;
@@ -14,7 +15,7 @@ export interface file {
 
 declare module "express-serve-static-core" {
   export interface Request {
-    user: any
+    user: any;
   }
 }
 
@@ -42,4 +43,29 @@ export const authMiddleware = async (
   } catch (err) {
     return res.status(401).json({ message: "Auth failed" });
   }
+};
+
+export interface SendVerificationMailOptions {
+  name: string;
+  email: string;
+  verificationOTP: string;
+}
+
+export const sendForgotResetMail = async ({
+  name,
+  email,
+  verificationOTP,
+}: SendVerificationMailOptions) => {
+  const body = `Hello <b>${name}</b>,<br><br>
+  In case you forgot your password,<p>your OTP for reset password is
+  <strong>${verificationOTP}</strong></p>`;
+  await mail({
+    email,
+    sub: "Forgot your password  | Gims Pvt Ltd",
+    body,
+  });
+};
+
+export const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };

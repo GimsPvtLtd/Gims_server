@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import client from "../db/postgres";
 import jwt from "jsonwebtoken";
+import { generateOTP, sendForgotResetMail } from "../utils";
 
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcryptjs");
@@ -233,4 +234,23 @@ export async function ChangePass(req: Request, res: Response) {
   });
 
   return res.status(200).json({ message: "Password Updated" });
+}
+
+export async function getPasswordOTP(req: Request, res: Response) {
+  const { email } = req.body;
+  const { rows: user } = await client.query(
+    "SELECT * FROM usertable WHERE email = $1",
+    [email]
+  );
+  if (user.length === 0) throw new Error("Email Not found");
+  if (user[0].password === null) throw new Error("Account not found");
+  const passwordOTP = generateOTP();
+  await client.query(
+    "UPDATE usertable SET passwordOTP = $1 WHERE userid = $2",
+    [passwordOTP, user[0].id]
+  );
+
+  const { name } = user[0];
+  await sendForgotResetMail({ name, email, verificationOTP: passwordOTP });
+  return  res.status(200).json({ message: "Verification OTP sent to mail" });
 }

@@ -24,6 +24,7 @@ import {
   AssignRequirement,
   addRequirement,
   addService,
+  deleteRequirement,
   deleteService,
   getRequirement,
   getRequirements,
@@ -49,6 +50,7 @@ import {
   deletetimesheet,
   getLeave,
   getLeaves,
+  getPasswordOTP,
   getTimesheet,
   getTimesheetActivity,
   getUsers,
@@ -114,6 +116,7 @@ app.post(
 );
 app.get("/users", getUsers);
 app.post("/login", login);
+app.post("/forgotpassword", getPasswordOTP);
 
 app.post(
   "/addservice",
@@ -390,6 +393,13 @@ app.delete(
     authMiddleware(req, res, next, ["ADMIN", "ENGINEER", "TECHICIAN"]);
   },
   deleteService
+);
+app.delete(
+  "/requirement/:id",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN"]);
+  },
+  deleteRequirement
 );
 app.post(
   "/addmember",

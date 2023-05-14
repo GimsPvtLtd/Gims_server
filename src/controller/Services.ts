@@ -134,6 +134,17 @@ export async function deleteService(req: Request, res: Response) {
     return res.json({ message: err.message }).end();
   }
 }
+
+export async function deleteRequirement(req: Request, res: Response) {
+  const { id } = req.params;
+  try {
+    await client.query("DELETE FROM requirements WHERE id = $1;", [id]);
+
+    return res.status(200).json({ message: "Requirement Deleted" });
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
+}
 export async function getRequirementsByUser(req: Request, res: Response) {
   const { id } = req.params;
   const requirement = await client.query(
