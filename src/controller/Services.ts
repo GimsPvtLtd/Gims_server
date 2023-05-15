@@ -84,24 +84,44 @@ export async function addRequirement(req: Request, res: Response) {
       );
     }
     try {
-      await client.query(
-        "INSERT INTO requirements(id,name,email,designation,companyname,mobile,address,fieldofservice,requirements,filelocation,date,serviceid,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
-        [
-          uuidv4(),
-          name,
-          email,
-          designation,
-          companyname,
-          mobile,
-          address,
-          fieldofservice,
-          requirements,
-          fileloc,
-          new Date().toISOString(),
-          id,
-          "PENDING",
-        ]
-      );
+      if (id !== "undefined") {
+        await client.query(
+          "INSERT INTO requirements(id,name,email,designation,companyname,mobile,address,fieldofservice,requirements,filelocation,date,serviceid,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+          [
+            uuidv4(),
+            name,
+            email,
+            designation,
+            companyname,
+            mobile,
+            address,
+            fieldofservice,
+            requirements,
+            fileloc,
+            new Date().toISOString(),
+            id,
+            "PENDING",
+          ]
+        );
+      } else {
+        await client.query(
+          "INSERT INTO requirements(id,name,email,designation,companyname,mobile,address,fieldofservice,requirements,filelocation,date,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)",
+          [
+            uuidv4(),
+            name,
+            email,
+            designation,
+            companyname,
+            mobile,
+            address,
+            fieldofservice,
+            requirements,
+            fileloc,
+            new Date().toISOString(),
+            "PENDING",
+          ]
+        );
+      }
     } catch (err) {
       return res.json({ message: err.message }).end();
     }
