@@ -66,6 +66,40 @@ export const sendForgotResetMail = async ({
   });
 };
 
+export const completeTaskMail = async ({
+  name,
+  email,
+  remarks,
+  requirements,
+  link,
+}: any) => {
+  let body;
+  if (link) {
+    body = `Requirement Name : ${name} <br> Requirement Details : ${requirements} <br>
+    Remarks : ${remarks} <br> required files : ${link}`;
+  } else {
+    body = `Requirement Name : ${name} <br> Requirement Details : ${requirements} <br>
+    Remarks : ${remarks}`;
+  }
+
+  await mail({
+    email,
+    sub: "Gims Pvt Ltd | Requirement Status ",
+    body,
+  });
+};
+
+export const submitTaskMail = async ({ name, email, requirements }: any) => {
+  const body = `Hello <b>${name}</b> Your requirement is submitted sucessfully. Our team will look into it and get back to you
+  <br> <b>Requirement Details :<b> ${requirements}`;
+
+  await mail({
+    email,
+    sub: "Gims Pvt Ltd | Requirement Submission ",
+    body,
+  });
+};
+
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };

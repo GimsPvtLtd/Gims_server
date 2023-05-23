@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import client from "../db/postgres";
-import { file } from "src/utils";
+import { completeTaskMail, file, submitTaskMail } from "../utils";
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
@@ -122,6 +122,7 @@ export async function addRequirement(req: Request, res: Response) {
           ]
         );
       }
+      await submitTaskMail({ name, email, requirements });
     } catch (err) {
       return res.json({ message: err.message }).end();
     }
@@ -185,7 +186,9 @@ export async function getRequirement(req: Request, res: Response) {
 }
 
 export async function getAssignedTasks(_: Request, res: Response) {
-  const requirements = await client.query("SELECT requirements.name as rname , team.name as uname , status , companyname FROM requirements INNER JOIN usertable ON requirements.completedby = usertable.userid INNER JOIN team on usertable.teammemberid = team.id");
+  const requirements = await client.query(
+    "SELECT requirements.name as rname , team.name as uname , status , companyname FROM requirements INNER JOIN usertable ON requirements.completedby = usertable.userid INNER JOIN team on usertable.teammemberid = team.id"
+  );
   return res.status(200).json(requirements.rows);
 }
 export async function AssignRequirement(req: Request, res: Response) {
@@ -201,13 +204,43 @@ export async function AssignRequirement(req: Request, res: Response) {
   }
 }
 
+export async function completeTask(req: Request, res: Response) {
+  const { email, remarks, link, id } = req.body;
+  try {
+    const requirement = await client.query(
+      "SELECT * FROM requirements WHERE id = $1;",
+      [id]
+    );
+
+    const { name, requirements } = requirement.rows[0];
+    await completeTaskMail({
+      name,
+      email,
+      remarks,
+      link,
+      requirements,
+    });
+    try {
+      await client.query(
+        "UPDATE requirements SET status = $1 , completedon = $2 WHERE id = $3;",
+        ["COMPLETED", new Date().toISOString(), id]
+      );
+    } catch (err) {
+      return res.json({ message: err.message }).end();
+    }
+    return res.status(200).json({ message: "Task Completed" });
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
+}
+
 export async function updateStatus(req: Request, res: Response) {
   const { status, requirementId } = req.body;
   try {
-    await client.query(
-      "UPDATE requirements SET status = $1 WHERE id = $2;",
-      [status, requirementId]
-    );
+    await client.query("UPDATE requirements SET status = $1 WHERE id = $2;", [
+      status,
+      requirementId,
+    ]);
     return res.status(200).json({ message: "Status Updated" });
   } catch (err) {
     return res.json({ message: err.message }).end();

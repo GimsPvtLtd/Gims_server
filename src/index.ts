@@ -24,6 +24,7 @@ import {
   AssignRequirement,
   addRequirement,
   addService,
+  completeTask,
   deleteRequirement,
   deleteService,
   getAssignedTasks,
@@ -121,6 +122,7 @@ app.get("/users", getUsers);
 app.post("/login", login);
 app.post("/forgotpassword", getPasswordOTP);
 app.post("/resetpassword", resetPassword);
+app.post("/completeTask", completeTask);
 
 app.post(
   "/addservice",
