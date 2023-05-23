@@ -239,7 +239,7 @@ export async function ChangePass(req: Request, res: Response) {
 export async function getPasswordOTP(req: Request, res: Response) {
   const { email } = req.body;
   const { rows: user } = await client.query(
-    "SELECT * FROM usertable WHERE email = $1",
+    "SELECT * FROM usertable WHERE emailid = $1",
     [email]
   );
   if (user.length === 0) throw new Error("Email Not found");
@@ -247,10 +247,35 @@ export async function getPasswordOTP(req: Request, res: Response) {
   const passwordOTP = generateOTP();
   await client.query(
     "UPDATE usertable SET passwordOTP = $1 WHERE userid = $2",
-    [passwordOTP, user[0].id]
+    [passwordOTP, user[0].userid]
   );
+  const { userid } = user[0];
+  await sendForgotResetMail({
+    name: userid,
+    email,
+    verificationOTP: passwordOTP,
+  });
+  return res.status(200).json({ message: "Verification OTP sent to mail" });
+}
 
-  const { name } = user[0];
-  await sendForgotResetMail({ name, email, verificationOTP: passwordOTP });
-  return  res.status(200).json({ message: "Verification OTP sent to mail" });
+export async function resetPassword(req: Request, res: Response) {
+  const { otp, email, password } = req.body;
+  const { rows: user } = await client.query(
+    "SELECT * FROM usertable WHERE emailid = $1",
+    [email]
+  );
+  if (user.length === 0) throw new Error("Email Not found");
+  if (user[0].password === null) throw new Error("Account not found");
+  if (user[0].passwordotp === otp) {
+    try {
+      const pass = await bcrypt.hash(password, 13);
+      await client.query(
+        "UPDATE usertable SET password = $1 WHERE emailid = $2",
+        [pass, email]
+      );
+    } catch (err) {
+      return res.json({ message: err.message }).end();
+    }
+  }
+  return res.status(200).json({ message: "Password Changed" });
 }

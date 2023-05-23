@@ -183,6 +183,11 @@ export async function getRequirement(req: Request, res: Response) {
 
   return res.status(200).json(requirement.rows[0]);
 }
+
+export async function getAssignedTasks(_: Request, res: Response) {
+  const requirements = await client.query("SELECT requirements.name as rname , team.name as uname , status , companyname FROM requirements INNER JOIN usertable ON requirements.completedby = usertable.userid INNER JOIN team on usertable.teammemberid = team.id");
+  return res.status(200).json(requirements.rows);
+}
 export async function AssignRequirement(req: Request, res: Response) {
   const { userid, requirementId } = req.body;
   try {
@@ -191,6 +196,19 @@ export async function AssignRequirement(req: Request, res: Response) {
       [userid, requirementId]
     );
     return res.status(200).json({ message: "Task Assigned" });
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
+}
+
+export async function updateStatus(req: Request, res: Response) {
+  const { status, requirementId } = req.body;
+  try {
+    await client.query(
+      "UPDATE requirements SET status = $1 WHERE id = $2;",
+      [status, requirementId]
+    );
+    return res.status(200).json({ message: "Status Updated" });
   } catch (err) {
     return res.json({ message: err.message }).end();
   }

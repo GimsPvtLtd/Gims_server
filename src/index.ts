@@ -26,11 +26,13 @@ import {
   addService,
   deleteRequirement,
   deleteService,
+  getAssignedTasks,
   getRequirement,
   getRequirements,
   getRequirementsByUser,
   getService,
   getservice,
+  updateStatus,
 } from "./controller/Services";
 import {
   addCareer,
@@ -55,6 +57,7 @@ import {
   getTimesheetActivity,
   getUsers,
   login,
+  resetPassword,
   uploadTimesheet,
 } from "./controller/User";
 import { authMiddleware } from "./utils";
@@ -117,6 +120,7 @@ app.post(
 app.get("/users", getUsers);
 app.post("/login", login);
 app.post("/forgotpassword", getPasswordOTP);
+app.post("/resetpassword", resetPassword);
 
 app.post(
   "/addservice",
@@ -153,6 +157,27 @@ app.post(
     authMiddleware(req, res, next, ["ADMIN"]);
   },
   AssignRequirement
+);
+app.post(
+  "/updatestatus",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, [
+      "ADMIN",
+      "ENGINEER",
+      "MARKETING",
+      "INTERN",
+      "HR",
+      "TECHNICIAN",
+    ]);
+  },
+  updateStatus
+);
+app.get(
+  "/assignedtasks",
+  (req: Request, res: Response, next: NextFunction) => {
+    authMiddleware(req, res, next, ["ADMIN"]);
+  },
+  getAssignedTasks
 );
 app.get(
   "/requirement/:id",
