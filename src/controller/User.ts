@@ -237,25 +237,29 @@ export async function ChangePass(req: Request, res: Response) {
 }
 
 export async function getPasswordOTP(req: Request, res: Response) {
-  const { email } = req.body;
-  const { rows: user } = await client.query(
-    "SELECT * FROM usertable WHERE emailid = $1",
-    [email]
-  );
-  if (user.length === 0) throw new Error("Email Not found");
-  if (user[0].password === null) throw new Error("Account not found");
-  const passwordOTP = generateOTP();
-  await client.query(
-    "UPDATE usertable SET passwordOTP = $1 WHERE userid = $2",
-    [passwordOTP, user[0].userid]
-  );
-  const { userid } = user[0];
-  await sendForgotResetMail({
-    name: userid,
-    email,
-    verificationOTP: passwordOTP,
-  });
-  return res.status(200).json({ message: "Verification OTP sent to mail" });
+  try {
+    const { email } = req.body;
+    const { rows: user } = await client.query(
+      "SELECT * FROM usertable WHERE emailid = $1",
+      [email]
+    );
+    if (user.length === 0) throw new Error("Email Not found");
+    if (user[0].password === null) throw new Error("Account not found");
+    const passwordOTP = generateOTP();
+    await client.query(
+      "UPDATE usertable SET passwordOTP = $1 WHERE userid = $2",
+      [passwordOTP, user[0].userid]
+    );
+    const { userid } = user[0];
+    await sendForgotResetMail({
+      name: userid,
+      email,
+      verificationOTP: passwordOTP,
+    });
+    return res.status(200).json({ message: "Verification OTP sent to mail" });
+  } catch (err) {
+    return res.json({ message: err.message }).end();
+  }
 }
 
 export async function resetPassword(req: Request, res: Response) {
@@ -264,7 +268,9 @@ export async function resetPassword(req: Request, res: Response) {
     "SELECT * FROM usertable WHERE emailid = $1",
     [email]
   );
-  if (user.length === 0) throw new Error("Email Not found");
+  if (user.length === 0){
+    return res.status(404).json({ message: "Email Not Found" }).end();
+  };
   if (user[0].password === null) throw new Error("Account not found");
   if (user[0].passwordotp === otp) {
     try {
@@ -274,7 +280,7 @@ export async function resetPassword(req: Request, res: Response) {
         [pass, email]
       );
     } catch (err) {
-      return res.json({ message: err.message }).end();
+      return res.status(404).json({ message: err.message }).end();
     }
   }
   return res.status(200).json({ message: "Password Changed" });
