@@ -258,20 +258,7 @@ app.get(
   },
   getTimesheetActivity
 );
-app.post(
-  "/applyleave",
-  (req: Request, res: Response, next: NextFunction) => {
-    authMiddleware(req, res, next, [
-      "ADMIN",
-      "ENGINEER",
-      "MARKETING",
-      "INTERN",
-      "HR",
-      "TECHNICIAN",
-    ]);
-  },
-  applyLeave
-);
+app.post("/applyleave", applyLeave);
 app.get(
   "/leave/:id",
   (req: Request, res: Response, next: NextFunction) => {
